@@ -7,7 +7,7 @@ class Post(BaseModel):
   author: str
 
   class Config:
-    schema_extra = {
+    json_schema_extra = {
       "example": {
         "title": "First Post",
         "content": "This is a first post content.",
@@ -22,7 +22,7 @@ class PostUpdate(BaseModel):
   author: Optional[str] = None
 
   class Config:
-    schema_extra = {
+    json_schema_extra = {
       "example": {
         "content": "This is a firstupdated post content.",
         "author": "Hello Developers",
