@@ -1,0 +1,48 @@
+1. Find all products in the "Electronics" category that have more than 50 items in stock:
+
+db.products.find({
+  category: "Electronics",
+  stock_quantity: { $gt: 50 }
+})
+
+2. Find the total number of orders placed by a user (given their user_id), including the total amount spent:
+
+db.orders.aggregate([
+  { $match: { user_id: userId } },
+  {
+    $group: {
+      _id: "$user_id",
+      total_orders: { $sum: 1 },
+      total_amount_spent: { $sum: "$total_amount" }
+    }
+  }
+])
+
+3. List all users who have purchased a specific product (given its product_id), including their name and email address:
+
+db.orders.aggregate([
+  { 
+    $match: { product_ids: productId } 
+  },
+  {
+    $lookup: {
+      from: "users",
+      localField: "user_id",
+      foreignField: "user_id",
+      as: "user_info"
+    }
+  },
+  { $unwind: "$user_info" },
+  { 
+    $project: { 
+      user_name: "$user_info.name", user_email: "$user_info.email"
+    } 
+  }
+])
+
+4. Update the stock quantity of a product (given its product_id) after an order is placed, considering the quantity of the product purchased in the order:
+
+db.products.updateOne(
+  { product_id: productId },
+  { $inc: { stock_quantity: -quantityPurchased } }
+)
